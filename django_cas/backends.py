@@ -11,6 +11,9 @@ from xml.dom import minidom
 import logging
 import time
 
+from .utils import dict_to_querystring
+
+
 __all__ = ['CASBackend']
 
 logger = logging.getLogger(__name__)
@@ -55,8 +58,7 @@ class CASBackend(ModelBackend):
         if settings.CAS_RENEW:
             params.update({'renew': 'true'})
     
-        page = urlopen(urljoin(settings.CAS_SERVER_URL, 'proxyValidate') + '?' + urlencode(params))
-    
+        page = urlopen(urljoin(settings.CAS_SERVER_URL, 'proxyValidate') + '?' + dict_to_querystring(params))
         try:
             response = minidom.parseString(page.read())
             if response.getElementsByTagName('cas:authenticationFailure'):

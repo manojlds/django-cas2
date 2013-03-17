@@ -11,6 +11,9 @@ from xml.dom import minidom
 import logging
 import types
 
+from .utils import dict_to_querystring
+
+
 __all__ = ['login', 'logout', 'proxy_callback']
 
 logger = logging.getLogger(__name__)
@@ -69,7 +72,7 @@ def _login_url(service):
         params.update({'gateway': 'true'})
     if settings.CAS_EXTRA_LOGIN_PARAMS:
         params.update(settings.CAS_EXTRA_LOGIN_PARAMS)
-    return urljoin(settings.CAS_SERVER_URL, 'login') + '?' + urlencode(params)
+    return urljoin(settings.CAS_SERVER_URL, 'login') + '?' + dict_to_querystring(params)
 
 
 def _logout_url(request, next_page):
@@ -77,7 +80,7 @@ def _logout_url(request, next_page):
 
     logout_url = urljoin(settings.CAS_SERVER_URL, 'logout')
     if next_page:
-        logout_url += '?' + urlencode({'url': _service(request) + next_page})
+        logout_url += '?' + dict_to_querystring({'url': _service(request) + next_page})
 
     return logout_url
 
